@@ -1,13 +1,24 @@
 import xlrd
 import pywhatkit
 from selenium import webdriver
-#imprime la primera columna y la primer fila
-#print(sheet1.cell_value(rowx = 0, colx = 0))
-#print(sheet1.nrows)
-driver = webdriver.Chrome('//home/mrhead/Descargas/geckodriver')
-driver.get('https://web.whatsapp.com')
+from selenium.webdriver.chrome.service import Service
 
-time.sleep(10)
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
+from selenium.webdriver.chrome.options import Options
+
+import time
+
+
+driver = webdriver.Chrome('/home/mrhead/Desktop/whats_app/chromedriver')
+start_url = ('https://web.whatsapp.com')
+
+driver.get(start_url)
+
+time.sleep(50)
+
+file_s=driver.find_element(By.CLASS_NAME, 'selectable-text.copyable-text')
 
 #de aqui sacamos los numeros
 excelFile = xlrd.open_workbook("name.xls")
@@ -15,26 +26,21 @@ sheet1 = excelFile.sheet_by_index(0)
 
 for i in range(0, sheet1.nrows):
     #elementos de el campo de busqueda
-    file_s = driver.find_element_by_xpath('//div[@contenteditable="true"][@data-tab="3"]')
 
 
     numeros = sheet1.cell_value(rowx = i, colx = 0)
 
     file_s.send_keys(numeros)
-
-    file_s.send_keys(u'\ue007')
+    time.sleep(5)
+    file_s.send_keys(Keys.ENTER)
 
     # Esperar unos segundos para asegurarse de que se haya abierto la conversación
     time.sleep(5)
 
     # Enviar el mensaje utilizando pywhatkit
-    pywhatkit.sendwhatmsg_instantly(numeros, "hola mundo")
-
+    msg = driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[5]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]/p')
     # Esperar unos segundos para que el mensaje se envíe antes de pasar al siguiente número
     time.sleep(10)
 
 # Cerrar el navegador
 driver.quit()
-
-    #inter = "+" + str(numeros)
-    #mi = str(numeros)
