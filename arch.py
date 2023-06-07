@@ -1,46 +1,64 @@
+import kivy
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 import xlrd
-import pywhatkit
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-
-from selenium.webdriver.chrome.options import Options
-
 import time
+import pywhatkit
 
 
-driver = webdriver.Chrome('/home/mrhead/Desktop/whats_app/chromedriver')
-start_url = ('https://web.whatsapp.com')
-
-driver.get(start_url)
-
-time.sleep(50)
-
-file_s=driver.find_element(By.CLASS_NAME, 'selectable-text.copyable-text')
-
-#de aqui sacamos los numeros
-excelFile = xlrd.open_workbook("name.xls")
-sheet1 = excelFile.sheet_by_index(0)
-
-for i in range(0, sheet1.nrows):
-    #elementos de el campo de busqueda
 
 
-    numeros = sheet1.cell_value(rowx = i, colx = 0)
+class MyBoxLayout(BoxLayout):
+    def __init__(self, **kwargs):
+        super(MyBoxLayout, self).__init__(**kwargs)
+        self.orientation = 'vertical'
 
-    file_s.send_keys(numeros)
-    time.sleep(5)
-    file_s.send_keys(Keys.ENTER)
+        self.add_widget(Label(text='Nombre del archivo:', size_hint=(1, None), height=40))
+        self.filename_input = TextInput(multiline=False, size_hint=(1, None), height=40)
+        self.add_widget(self.filename_input)
 
-    # Esperar unos segundos para asegurarse de que se haya abierto la conversación
-    time.sleep(5)
+        self.add_widget(Label(text='Mensaje:', size_hint=(1, None), height=40))
+        self.message_input = TextInput(multiline=True, size_hint=(1, 3), height=40)
+        self.add_widget(self.message_input)
 
-    # Enviar el mensaje utilizando pywhatkit
-    msg = driver.find_element(By.XPATH,'/html/body/div[1]/div/div/div[5]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]/p')
-    # Esperar unos segundos para que el mensaje se envíe antes de pasar al siguiente número
-    time.sleep(10)
+        self.send_button = Button(text='Enviar', size_hint=(1, None), height=40)
+        self.send_button.bind(on_press=self.send_message)
+        self.add_widget(self.send_button)
 
-# Cerrar el navegador
-driver.quit()
+    def send_message(self, instance):
+        filename = self.filename_input.text
+        message = self.message_input.text
+
+        try:
+            excelFile = xlrd.open_workbook(filename)
+            sheet1 = excelFile.sheet_by_index(0)
+
+            for nums in range(0, sheet1.nrows):
+                numeros = sheet1.cell_value(rowx=nums, colx=0)
+                nombre = sheet1.cell_value(rowx=nums, colx=1)
+
+
+
+                try:
+                    pywhatkit.sendwhatmsg_instantly(numeros, message)
+                    print("Se envió el mensaje a", nombre)
+
+                except:
+
+                    print("No se pudo enviar el mensaje a", nombre)
+
+        except Exception as e:
+            print("Ocurrió un error:", str(e))
+
+
+class MyApp(App):
+    def build(self):
+        return MyBoxLayout()
+
+
+if __name__ == '__main__':
+    MyApp().run()
