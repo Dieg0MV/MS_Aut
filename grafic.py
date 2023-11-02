@@ -1,3 +1,5 @@
+#Esta es la parte grafica de el programa necesitas descargar What.py para que funcione esta parte por que importa la logica
+
 import kivy
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
