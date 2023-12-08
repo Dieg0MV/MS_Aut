@@ -8,3 +8,4 @@ no uso la API
 - pip install selenium
 - pip install kivy
 - pip install xlrd
+- pip webdriver-manager
