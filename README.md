@@ -5,7 +5,6 @@ sin usar la API
 
 # Install
 - pip install selenium
-- pip install kivy
 - pip install xlrd
 - pip install webdriver-manager
 - pip install tkinter
