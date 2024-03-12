@@ -8,3 +8,4 @@ sin usar la API
 - pip install kivy
 - pip install xlrd
 - pip install webdriver-manager
+- pip install tkinter
