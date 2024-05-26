@@ -1,4 +1,4 @@
-#Esta es la version final del programa
+#1.0.1v
 import xlrd
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -15,13 +15,12 @@ class MSGimg:
         message = input('escribe tu mensaje: ')
         filename= filedialog.askopenfilename()
         image_path= filedialog.askopenfilename()
-        #configuraciones para manejar el browser 
+        
         self.driver = webdriver.Edge(service=EdgeService(EdgeChromiumDriverManager().install()))
         self.start_url = 'https://web.whatsapp.com'
         self.driver.get(self.start_url)
         wait = WebDriverWait(self.driver, 30)
         
-        # De aquí sacamos los números
         self.filename = filename
         self.excelFile = xlrd.open_workbook(self.filename)
         self.sheet1 = self.excelFile.sheet_by_index(0)
@@ -42,7 +41,7 @@ class MSGimg:
                 time.sleep(1)
                 file_s.send_keys(Keys.ENTER)
 
-                # Esperar unos segundos para asegurarse de que se haya abierto la conversación
+                # Esperar unos segundos para asegurarse de que se haya abierto la conversació
                 time.sleep(2)
     
                 chat_box = self.driver.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]/p')
